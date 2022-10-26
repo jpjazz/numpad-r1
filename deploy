@@ -1,0 +1,2 @@
+rsync -FFvr ./ /Volumes/CIRCUITPY
+rsync -v /Volumes/CIRCUITPY/boot_out.txt .

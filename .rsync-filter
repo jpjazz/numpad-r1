@@ -1,0 +1,7 @@
+- .vscode
+- .git
+- .gitattributes
+- .gitignore
+- .DS_Store
+- deploy
+- boot_out.txt
