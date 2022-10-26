@@ -2,6 +2,3 @@ Adafruit CircuitPython 8.0.0-beta.3 on 2022-10-20; Adafruit KB2040 with rp2040
 Board ID:adafruit_kb2040
 UID:DF60BCA003864733
 boot.py output:
-Traceback (most recent call last):
-  File "boot.py", line 3, in <module>
-AttributeError: 'module' object has no attribute 'set_next_stack_limit'

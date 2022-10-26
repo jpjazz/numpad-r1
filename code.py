@@ -2,17 +2,6 @@ print("Starting")
 
 import board
 import time
-# import gc
-# import storage
-
-# time.sleep(5)
-# print("Enabling USB drive")
-# storage.enable_usb_drive()
-
-# Make this run on a Fn keypress
-# import microcontroller 
-# microcontroller.on_next_reset(microcontroller.RunMode.NORMAL)
-# microcontroller.reset()
 
 # from micropython import const
 
@@ -20,15 +9,13 @@ import time
 # import ulab.numpy.linalg as lg
 
 from kmk.kmk_keyboard import KMKKeyboard
-from kmk.keys import KC
+from kmk.keys import KC, make_key
 from kmk.scanners import DiodeOrientation
 from kmk.extensions.rgb import RGB, AnimationModes
 from kmk.quickpin.pro_micro.kb2040 import pinout
-# from kmk.extensions.media_keys import MediaKeys
 from kmk.modules.layers import Layers
 
 rgb_ext = RGB(pixel_pin=board.A3, num_pixels=22, hue_default=2, sat_default=255, val_default=25, animation_mode=AnimationModes.STATIC_STANDBY)
-# media_key_ext = MediaKeys()
 
 keyboard = KMKKeyboard()
 
@@ -36,7 +23,6 @@ keyboard.col_pins = pinout[7:12]  # try D5 on Feather, keeboar
 keyboard.row_pins = pinout[18:13:-1]  # try D6 on Feather, keeboar
 keyboard.diode_orientation = DiodeOrientation.ROW2COL
 keyboard.extensions.append(rgb_ext)
-# keyboard.extensions.append(media_key_ext)
 keyboard.modules.append(Layers())
 
 # keyboard.debug_enabled = True
@@ -61,6 +47,13 @@ def lighter_upper(key, keyboard, *args):
 def dimmer_downer(key, keyboard, *args):
     rgbobj.set_hsv(rgbobj.hue_default, rgbobj.sat_default, rgbobj.val_default, rgbmap[args[1]])
 
+def safe_starter(key, keyboard, *args):
+    import microcontroller 
+    microcontroller.on_next_reset(microcontroller.RunMode.SAFE_MODE)
+    microcontroller.reset()
+
+SAFE = make_key(on_press=safe_starter)
+
 keyboard.keymap = [
     [   KC.HOME,    KC.BSPACE,  KC.KP_SLASH,    KC.KP_ASTERISK, KC.KP_MINUS,
         KC.PGUP,    KC.KP_7,    KC.KP_8,        KC.KP_9,        KC.NO,
@@ -69,10 +62,10 @@ keyboard.keymap = [
         KC.MO(1),   KC.KP_0,    KC.NO,          KC.KP_DOT,      KC.NO
     ],
 
-    [   KC.TRNS,    KC.DEL,     KC.TRNS,        KC.TRNS,        KC.TRNS,
+    [   KC.BOOTLOADER,    KC.DEL,     KC.TRNS,        KC.TRNS,        KC.TRNS,
         KC.TRNS,    KC.F7,      KC.F8,          KC.F9,          KC.TRNS,
         KC.TRNS,    KC.F4,      KC.F5,          KC.F6,          KC.TRNS,
-        KC.TRNS,    KC.F1,      KC.F2,          KC.F3,          KC.TRNS,
+        SAFE,    KC.F1,      KC.F2,          KC.F3,          KC.TRNS,
         KC.TRNS,    KC.F10,     KC.TRNS,        KC.COMMA,       KC.TRNS
     ]
 ]
@@ -108,11 +101,6 @@ print(now - then)
  """
 
 rgbobj.effect_static()
-# rgbobj.set_hsv_fill(rgbobj.hue_default, rgbobj.sat_default, rgbobj.val_default)
-# rgbobj.set_hsv(0, 255, 255, 18)
-# print(rgbobj.pixels)
-# print(rgbobj.pixels[0][11])
-# print(dir(rgbobj))
 
 if __name__ == '__main__': 
     keyboard.go()
